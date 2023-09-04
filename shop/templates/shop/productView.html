@@ -1,0 +1,65 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}{{qvprods.product_name}} {% endblock %}
+
+{% block body %}
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="row allign-items-center">
+                <img src="/media/{{qvprods.image}}" width="100%" height="365px">
+            </div>
+           
+        </div>
+
+ 
+        <div class="col-md-3 mx-4 my-3">
+            
+            <h1 id="name{{exo}}">{{qvprods.product_name}}</h1>
+            <b><h4 id="price{{exo}}">₹{{qvprods.price}}</h4></b>
+            <p>{{qvprods.desc}}</p>
+            <div class="row my-4 allign-items-center">
+                <button class="btn btn-success btn-lg ">
+                    <a type="button" style="text-decoration: none; color: aliceblue;" href="/checkout"> Checkout</a>
+                </button> 
+                <button class="btn btn-secondary btn-lg my-2 cart " id="pr{{exo}}">
+                    <a type="button" style="text-decoration: none; color: aliceblue;" > Add to Cart</a>
+                </button> 
+            </div>
+        </div>
+    </div>
+</div>
+   
+
+
+{% endblock %}
+{% block js %}
+<script>
+    
+ function updatePopover(shoppingcart) {
+      if(window.location.pathname=="/"){
+        var popStr = "";
+        popStr = popStr + "<div class= 'mx-2 my-2'>";
+          var i = 1;
+          d =sum();
+          if(d == 0){
+            pStr = "<h5>Cart is empty. Add products</h5>"
+            document.getElementById('popcart').setAttribute('data-content', pStr);
+          }
+          else{
+            for (var item in shoppingcart) {
+              popStr = popStr + "<b>" + i + "</b>.";
+              popStr = popStr + document.getElementById('name' + item.slice(2)).innerHTML +
+              " ...Qty:" + "<b>" + shoppingcart[item][0] + "</b>. <br>";
+              i += 1;
+            }
+            
+            popStr = popStr + "</div>";
+            document.getElementById('popcart').setAttribute('data-content', popStr);
+          }
+        }
+        
+          $('#popcart').popover({ trigger: "hover" });
+        }
+</script>
+  {% endblock %} 

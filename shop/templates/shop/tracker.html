@@ -1,0 +1,366 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}My Orders{% endblock %}
+{% block head %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+{% endblock %}
+
+{% block mycss %}
+
+
+<style>
+    .accordion-item {
+        width: 60vw;
+        margin: 5vh auto 0 auto;
+    }
+
+    .aman {
+        position: relative;
+        top: 50vh;
+    }
+    #cart-container {
+        margin-bottom: 20px;
+        overflow-x: auto;
+    }
+
+    #cart-container table {
+        border-collapse: collapse;
+        width: 100%;
+        table-layout: fixed;
+        white-space: nowrap;
+    }
+
+    #cart-container table thead {
+        font-weight: 600;
+    }
+
+    #cart-container table thead td {
+        background-color: rgb(99, 199, 99);
+        color: white;
+        border: none;
+        padding: 6px 0;
+    }
+
+    #Food_cart {
+        font-size: 50px;
+    }
+
+    .removeall {
+        display: flex;
+        justify-content: end;
+        margin: 5px 210px;
+
+    }
+
+    .removeall button {
+        background-color: tomato;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 5px;
+        width: 100px;
+        height: 30px;
+
+    }
+
+    #cart-container table td {
+        border: 1px solid #b6b3b3;
+        text-align: center;
+    }
+
+    #cart-container table td:nth-child(1) {
+
+        width: 55%;
+    }
+
+    #cart-container table td:nth-child(2) {
+        width: 15%;
+    }
+
+    #cart-container table td:nth-child(3) {
+        width: 15%;
+    }
+
+    #cart-container table td:nth-child(4) {
+        width: 15%;
+    }
+
+   
+
+
+
+    #cart-container table tbody img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+    }
+
+    #udha {
+        width: 60px;
+    }
+
+    .bethe {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .second-hr {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 1px;
+        background-color: #b8b7b3;
+    }
+
+    .row .coupon>div,
+    .row .total>div {
+        border: 1px solid #b6b3b3;
+
+    }
+
+    #cart-bottom .coupon h5,
+    #cart-bottom .total h5 {
+        background-color: rgb(99, 199, 99);
+        color: #fff;
+        border: none;
+        padding: 6px 12px;
+        font-weight: 600px;
+
+    }
+
+    #cart-bottom .coupon p,
+    #cart-bottom .coupon input {
+        padding: 0 12px;
+    }
+
+    #cart-bottom .coupon input {
+        height: 43.2px;
+        margin: 0 0 20px 12px;
+    }
+
+    #cart-bottom .total div>div {
+        padding: 0 12px;
+    }
+
+    #cart-bottom button {
+        color: #fff;
+        background-color: black;
+        border-radius: 10px;
+        padding: 10px;
+
+    }
+
+    #cart-bottom .total div>div {
+        padding: 0 12px;
+
+    }
+
+    #cart-bottom .coupon p,
+    #cart-bottom .total h6 {
+        color: #2a2a2a;
+    }
+
+    #cart-bottom .total div>button {
+        margin: 0 12px 20px 0;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .accordion-button{
+        z-index: 3;
+        border-color: none;
+        outline: 0;
+        box-shadow: none;
+    }
+
+
+
+    @media only screen and (max-width: 500px) {
+        .total {
+            margin-top: 25px;
+        }
+        .order_summary{
+            font-size: 15px;
+        }
+        .opo{
+            font-size: x-small;
+        }
+        h5{
+            font-size: x-small;
+        }
+    }
+</style>
+
+
+{% endblock %}
+
+
+{% block body %}
+
+{% if user.is_authenticated %}
+<div class="accordion" id="accordionExample">
+    {% for order in order_list reversed %}
+    <div class="accordion-item bg-dark p-2">
+        <h4 class="accordion-header mb-0" id="heading{{forloop.counter}}">
+            <button class="accordion-button bg-dark " type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse{{forloop.counter}}" aria-expanded="true"
+                aria-controls="collapse{{forloop.counter}}" style="height: 8vh;">
+                <span class="badge" style="background-color: rgb(99, 199, 99);">
+                    Order Id: {{order.0.order_id}}
+                </span class="ml-1">
+                <pre>   </pre>
+                <span style="color:rgb(99, 199, 99);">{{order.0.name}}</span>
+            </button>
+        </h4>
+        <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
+            aria-labelledby="heading{{forloop.counter}}" data-bs-parent="#accordionExample">
+            <div class="accordion-body bg-dark">
+                <ul class="list-group" style="cursor: pointer;">
+                    <li class="list-group-item order_summary" data-toggle="modal" data-target="#order_summary{{forloop.counter}}">
+                        Order Summary</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="order_summary{{forloop.counter}}" tabindex="-1"
+    aria-labelledby="order_summary{{forloop.counter}}" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalTitle{{forloop.counter}}">Order Summary</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal_body{{forloop.counter}}">
+                <!-- taking the cart data json from and parsing it using Js -->
+                <textarea style="display:none;" name="order_data{{forloop.counter}}" class="order_data"
+                    id="order_data{{forloop.counter}}" cols="30" rows="10">
+                    {{order.0.items_json}}
+                </textarea>
+
+                <div class="container_box">  
+                        <section id="cart-container" class="container ">
+                            <table width="100%"> 
+                                <br>
+                    
+                                <thead >
+                                    <tr>
+                                        <td>Product</td>
+                                        <td>Quantity</td>
+                                        
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody class="undhu" id="undhu{{forloop.counter}}">
+                                 
+                                     <!-- <tbody class="undhu" id="undhu{{forloop.counter}}">
+                                       
+                                    </tbody>     
+                                -->                                       
+                                </tbody>
+                            </table>
+                        </section>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer"></div>
+        </div>
+    </div>
+</div>
+
+{% endfor %}
+{% else %}
+<div class="container d-flex justify-content-center mt-5">
+<h1 class="display-1" style="color:rgb(99, 199, 99)"> ------Login to view your Orders------</h1>
+</div>
+{% endif %}
+{% endblock %}
+{% block js %}
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+    crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+ -->
+ <script>
+ const order_data = document.querySelectorAll(".order_data");
+ let i =1;
+ order_data.forEach((element)=>{
+     console.log(element.innerHTML)
+    let json_data = JSON.parse(element.innerHTML);
+    let sum = 0
+    let undhu_body = document.getElementById('undhu'+i);
+    undhu_body.innerHTML = " ";
+    var timmimg= 0;
+    for (const key in json_data) {
+        console.log(key)
+        if(key=="date"){
+             od = json_data[key]
+             timmimg = od[0];
+             continue;
+        }
+        else{
+                dict_value = json_data[key];
+                sum +=  dict_value[0] * dict_value[1];
+                undhu_body.innerHTML += ` 
+                
+                                    <tr class="opo">
+                                            <td>
+                                                 ${dict_value[2].slice(0,30)}
+                                            </td>
+                                            <td>
+                                                ${dict_value[0]}</h5>
+                                            </td>
+                                            
+                                    </tr>`
+        }                    
+    }; 
+    undhu_body.innerHTML += `<div class="p-3">
+    <strong  class="badge " style="background-color: rgb(99, 199, 99); 
+    
+    "<strong Total Amount: ${sum}</strong>
+    <strong  class="badge " style="background-color: rgb(99, 199, 99);">Order Date:${timmimg}</strong>
+    </div>` 
+    i = i + 1;
+
+ });
+
+ function updatePopover(shoppingcart) {
+      if(window.location.pathname=="/"){
+        var popStr = "";
+        popStr = popStr + "<div class= 'mx-2 my-2'>";
+          var i = 1;
+          d =sum();
+          if(d == 0){
+            pStr = "<h5>Cart is empty. Add products</h5>"
+            document.getElementById('popcart').setAttribute('data-content', pStr);
+          }
+          else{
+            for (var item in shoppingcart) {
+              popStr = popStr + "<b>" + i + "</b>.";
+              popStr = popStr + document.getElementById('name' + item.slice(2)).innerHTML +
+              " ...Qty:" + "<b>" + shoppingcart[item][0] + "</b>. <br>";
+              i += 1;
+            }
+            
+            popStr = popStr + "</div>";
+            document.getElementById('popcart').setAttribute('data-content', popStr);
+          }
+        }
+        
+          $('#popcart').popover({ trigger: "hover" });
+        }
+
+
+</script>
+    {% endblock %} 

@@ -1,0 +1,227 @@
+{% extends 'shop/basic.html' %}
+
+{% block title %}SHOP{% endblock %}
+
+{% block mycss %}
+<style>
+  .col-md-3 {
+    display: inline-block;
+    margin-left: -4px;
+  }
+
+  .carousel-indicators .active {
+    background-color: blue;
+  }
+
+  .col-md-3 img {
+    width: 100%;
+    height: auto;
+  }
+
+  body .carousel-indicator li {
+    background-color: blue;
+  }
+
+  body .carousel-indicators {
+    bottom: 0;
+  }
+
+  .carousel-control-prev,
+  .carousel-control-next {
+    top: auto;
+    bottom: auto;
+    padding-top: 200px;
+  }
+
+  body .carousel-control-prev-icon,
+  body .carousel-control-next-icon {
+    background-color: blue;
+  }
+
+  body .no-padding {
+    padding-left: 0,
+  }
+
+  .col-md-3 img {
+    width: 100;
+    height: 248px;
+  }
+  
+
+/* The Transformation */
+.card-img {        
+  overflow: hidden;
+  margin: 0 auto;
+ }
+     
+.card-img img {
+   width: 100%;
+   transition: 0.5s all ease-in-out;
+}
+     
+.card-img:hover img {
+  transform: scale(1.5);
+}
+ 
+  @media (min-width: 1200px){
+   .container {
+       max-width: 1350px;
+   }
+  }
+  .card-text{
+    font-weight:600;
+  }
+  .banner img{
+   width: 99vw;
+  }
+ 
+</style>
+{% endblock %}
+
+</head>
+
+<body>
+  {% block body%}
+  {% load static %}
+  
+  <div class="banner d-flex">
+    <div class="banner-in">
+    <img src="/static/b2.jpg" alt="">
+  </div>
+  </div>
+  
+  <div class="container" style="max-width: 1350px;">
+    <!--Slideshow starts here -->
+    
+    {% for prods, range, nSlides in allProds %}
+    
+  
+    <h1 class="display-5 fw-bold my-4"><span style="color: rgb(99, 199, 99);">R</span>ecomonded Products in {{prods.0.category}}</h1>
+
+    <div class="row">
+      <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+        <ul class="carousel-indicators " style="display: none;">
+          <li data-target="demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+
+          {% for i in range %}
+          <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+          {% endfor %}
+
+        </ul>
+
+        <div class="container carousel-inner no-padding">
+          <div class="carousel-item active">
+
+            {% for i in prods %}
+            <div class="col-xs-3 col-sm-3 col-md-3 mb-2">
+              <div class="card allign-items-center" style="width: 17rem;">
+                <div class="card-img"><img src='/media/{{i.image}}' id="img{{i.id}}" class="card-img-top" alt="..."></div>
+                <div class="card-body">
+                  <h5 class="card-title" id="name{{i.id}}">{{i.product_name|slice:"0:39"}}..</h5>
+                  <h5 class="card-text" id="price{{i.id}}">₹ {{i.price}}</h5>
+                  <span id="divpr{{i.id}}" class="divpr my-1">
+                    <button id="pr{{i.id}}" class="btn btn-success cart">Add to Cart</button>
+                  </span>
+                  <a href="/productView/{{i.id}}">
+                    <button id="qv{{i.id}}" class="btn btn-success ">Quick View</button></a>
+                </div>
+              </div>
+            </div>
+            {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+          </div>
+          <div class="carousel-item">
+            {% endif %}
+
+            {% endfor %}
+          </div>
+
+        </div>
+
+        <!-- left and right controls for the slide -->
+
+      </div>
+      <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+        <img src="https://img.icons8.com/external-those-icons-fill-those-icons/24/000000/
+                external-left-arrows-those-icons-fill-those-icons-3.png" />
+      </a>
+      <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+        <img src="https://img.icons8.com/external-those-icons-fill-those-icons/24/000000/
+        external-right-arrows-those-icons-fill-those-icons-5.png" />
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="banner">
+    <img src="/static/banner1.jpg" alt="">
+  </div>
+  
+  {% endblock %}
+  {% block js %}
+  <script>
+
+
+    
+    // updatePopover(shoppingcart);
+    updatePopover(shoppingcart);
+
+    function updatePopover(shoppingcart) {
+      if(window.location.pathname=="/"){
+      var popStr = "";
+      popStr = popStr + "<div class= 'mx-2 my-2'>";
+      var i = 1;
+      d =sum();
+        if(d == 0){
+          pStr = "<h5>Cart is empty. Add products</h5>"
+          document.getElementById('popcart').setAttribute('data-content', pStr);
+        }
+        else{
+      for (var item in shoppingcart) {
+        let a  =document.getElementById('name' + item.slice(2)).innerHTML;
+        popStr = popStr + "<b>" + i + "</b>.";
+        popStr = popStr + a.slice(0,11) +
+          " ...Qty:" + "<b>" + shoppingcart[item][0] + "</b>. <br>";
+        i += 1;
+      }
+
+      popStr = popStr + "</div>";
+      document.getElementById('popcart').setAttribute('data-content', popStr);
+    }
+  }
+    $('#popcart').popover({ trigger: "hover" });
+    }
+
+
+
+    // function clearCart() {
+    //   shoppingcart = JSON.parse(localStorage.getItem('shoppingcart'));
+    //   for (var item in shoppingcart) {
+    //     document.getElementById('div' + item).innerHTML = "<button id='" + item + "' class='btn btn-primary cart'>Add to Cart</button>"
+    //   }
+    //   localStorage.clear();
+    //   shoppingcart = {};
+    //   addtoCart();
+    //   refresh();
+    //   window.location.reload();
+    // }
+  </script>
+  {% endblock %}
+
+
+
+
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+    crossorigin="anonymous"></script>
+
+</body>
+
+</html>
